@@ -104,6 +104,20 @@ Restore compares the current state with what was applied. Anything you changed
 in the meantime is **left alone** and reported as a conflict; `--force`
 overwrites it.
 
+## Repository layout
+
+```
+crates/     the Rust workspace (see below)
+docs/       architecture, limitations, testing, installed state
+packaging/  Arch PKGBUILD and install script
+assets/     desktop entry and icon
+legacy/     the original Python prototype, archived for reference only
+```
+
+`legacy/prototype/` is not built, installed or run by anything. It is kept
+because the Rust design was derived from reading it; see
+[legacy/prototype/README.md](legacy/prototype/README.md).
+
 ## How it works
 
 ```
