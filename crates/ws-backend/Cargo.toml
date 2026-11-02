@@ -1,0 +1,14 @@
+[package]
+name = "ws-backend"
+description = "Desktop backend interface for Wallpaper Style"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+ws-core.workspace = true
+ws-palette.workspace = true
+serde.workspace = true
+thiserror.workspace = true
+log.workspace = true

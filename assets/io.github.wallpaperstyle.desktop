@@ -1,0 +1,28 @@
+[Desktop Entry]
+Type=Application
+Version=1.5
+Name=Wallpaper Style
+GenericName=Desktop Appearance
+Comment=Match your desktop colours, Qt applications and window transparency to your wallpaper
+Exec=wallpaper-style-gui
+TryExec=wallpaper-style-gui
+Icon=io.github.wallpaperstyle
+Terminal=false
+Categories=Settings;DesktopSettings;Qt;KDE;
+Keywords=wallpaper;colours;colors;theme;palette;transparency;opacity;kde;plasma;kvantum;
+X-KDE-StartupNotify=true
+Actions=apply-theme;restore;
+# Plasma needs an explicit single-window hint so the app does not get two
+# taskbar entries and matches its own window to this launcher.
+StartupWMClass=wallpaper-style
+X-GNOME-UsesNotifications=true
+
+[Desktop Action apply-theme]
+Name=Apply current wallpaper theme
+Exec=wallpaper-style-rs apply
+Icon=io.github.wallpaperstyle
+
+[Desktop Action restore]
+Name=Restore previous appearance
+Exec=wallpaper-style-rs restore
+Icon=edit-undo

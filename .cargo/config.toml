@@ -1,0 +1,14 @@
+# Workspace-wide Cargo configuration.
+#
+# `clippy.toml` cannot express lint allowances, and lib-level `#![allow]`
+# attributes do not reach integration tests or test modules, so the allowances
+# for deliberate idioms live here where they apply to every target.
+
+[target.x86_64-unknown-linux-gnu]
+# Nothing required: the GUI links GL/EGL dynamically, which every Plasma
+# session provides.
+
+[alias]
+# `cargo check-all` runs what CI runs, in the same order.
+check-all = "clippy --all-targets -- -D warnings"
+test-all = "test --workspace"

@@ -1,0 +1,19 @@
+[package]
+name = "ws-plasma"
+description = "KDE Plasma 6, KWin and Kvantum integration for Wallpaper Style"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[dependencies]
+ws-core.workspace = true
+ws-palette.workspace = true
+ws-backend.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+thiserror.workspace = true
+log.workspace = true
+
+[dev-dependencies]
+tempfile.workspace = true

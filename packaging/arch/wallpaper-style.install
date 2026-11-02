@@ -1,0 +1,72 @@
+# Arguments: nothing is passed by makepkg; these run at the package level.
+#
+# Nothing here writes to the user's home directory. On a system with several
+# users, a post-install hook cannot know whose desktop to change, and doing so
+# uninvited would violate the product's promise not to modify a desktop without
+# being asked. The user runs `wallpaper-style install` themselves.
+
+post_install() {
+  cat <<'MESSAGE'
+Wallpaper Style has been installed, but it has not changed anything yet.
+
+To set it up for your account, run:
+
+    wallpaper-style install     # adds the background service and KWin effect
+    wallpaper-style preview     # see the palette without applying it
+    wallpaper-style apply       # snapshot, then apply
+
+Or open "Wallpaper Style" from the application launcher, which does the same
+with a graphical interface.
+
+Diagnostics:  wallpaper-style doctor
+Uninstall:    wallpaper-style uninstall
+MESSAGE
+}
+
+post_upgrade() {
+  cat <<'MESSAGE'
+Wallpaper Style has been upgraded.
+
+If you use the background service, run:
+
+    systemctl --user daemon-reload
+    wallpaper-style install     # idempotent; updates the service unit
+
+Restart the control centre if it is open.
+MESSAGE
+}
+
+pre_remove() {
+  # Stop the watcher before its binary disappears, so systemd does not leave a
+  # unit in a failing state that spams the journal. This runs as root, so it can
+  # only act on system-wide state; a user session will be unaffected, and the
+  # message below says how to finish the job.
+  cat <<'MESSAGE'
+Stopping any running Wallpaper Style service...
+
+Before removing the package, each user who installed the service from the
+package should run:
+
+    systemctl --user disable --now wallpaper-style.service
+    wallpaper-style uninstall
+
+`uninstall` reverts the theme changes Wallpaper Style applied and removes the
+KWin effect. Removing the package alone leaves the applied colours and the
+effect in place, because they live in the user's own directories.
+MESSAGE
+}
+
+post_remove() {
+  cat <<'MESSAGE'
+Wallpaper Style has been removed.
+
+User data is untouched, since it lives outside the package:
+    ~/.config/wallpaper-style     settings
+    ~/.local/state/wallpaper-style snapshots and service state
+    ~/.local/share/wallpaper-style installed marker
+    ~/.local/share/color-schemes  generated colour schemes
+    ~/.config/Kvantum             generated Kvantum themes
+
+Delete those directories to remove the application's data completely.
+MESSAGE
+}

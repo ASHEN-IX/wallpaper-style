@@ -1,0 +1,6 @@
+# Clippy configuration shared by the workspace.
+
+# The palette maths uses short names (r, g, b, h, s, l) that match the colour
+# literature; a longer name would make the formulas harder to compare with the
+# references they are derived from.
+too-many-arguments-threshold = 8

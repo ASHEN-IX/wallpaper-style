@@ -1,0 +1,30 @@
+[package]
+name = "ws-gui"
+description = "Desktop control center for Wallpaper Style"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[lib]
+name = "ws_gui"
+path = "src/lib.rs"
+
+[[bin]]
+name = "wallpaper-style-gui"
+path = "src/main.rs"
+
+[dependencies]
+ws-core.workspace = true
+ws-palette.workspace = true
+ws-backend.workspace = true
+ws-plasma.workspace = true
+ws-service.workspace = true
+eframe = { version = "0.36", default-features = false, features = ["glow", "wayland", "x11", "default_fonts"] }
+egui = "0.36"
+anyhow.workspace = true
+log.workspace = true
+env_logger.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+rfd = { version = "0.17", default-features = false, features = ["xdg-portal", "wayland"] }

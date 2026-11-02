@@ -1,0 +1,106 @@
+# Maintainer: Wallpaper Style contributors
+#
+# Wallpaper Style — wallpaper-driven desktop theming for KDE Plasma 6.
+#
+# Build from a release tarball:
+#   makepkg -si
+#
+# Building this PKGBUILD from a git checkout:
+#   makepkg -si
+#   (with WRAPPER_SRC pointing at the checkout, or place the sources beside it)
+#
+# Runtime dependencies are deliberately split:
+#   * `depends`      — needed for the application to work at all;
+#   * `optdepends`   — features that are detected, reported and disabled when
+#                      absent, never assumed.
+
+pkgname=wallpaper-style
+pkgver=0.1.0
+pkgrel=1
+pkgdesc='Match KDE Plasma colours, Qt application themes and window transparency to your wallpaper'
+arch=('x86_64' 'aarch64')
+url='https://example.invalid/wallpaper-style'
+license=('MIT')
+depends=(
+  # KWin provides the compositor the transparency effect runs inside.
+  'kwin'
+  # plasma-apply-colorscheme, plasmashell and the Plasma wallpaper plugins.
+  'plasma-workspace'
+  # qdbus6 / kwriteconfig6 / kreadconfig6 used for detection and activation.
+  'qt6-tools'
+  'kconfig'
+  # GTK3 is required by the window's file chooser (XDG portal backend) and by
+  # the GL toolchain eframe links against; both are already present on Plasma.
+  'gtk3'
+  'libxkbcommon'
+  'wayland'
+  'libglvnd'
+)
+makedepends=('rust' 'cargo')
+optdepends=(
+  'kvantum: generate matching themes for Qt applications'
+  'systemd: run the background watcher (present on all Arch installs)'
+  'xdg-desktop-portal: use the native file chooser for choosing an image'
+)
+# Cargo's release profile already sets `lto = "thin"`, so makepkg's LTO pass is
+# redundant and would double the link time for no gain.
+options=('!lto')
+# A release tarball must be checksummed. Replace SKIP with the real BLAKE2 sum
+# before publishing; `updpkgsums` does this.
+b2sums=('SKIP')
+install="${pkgname}.install"
+# The release tarball expands to a single directory named ${pkgname}-${pkgver}.
+source=("${pkgname}-${pkgver}.tar.gz")
+
+_srcdir() {
+  cd "${srcdir}/${pkgname}-${pkgver}"
+}
+
+build() {
+  _srcdir
+  # --locked keeps the build reproducible: Cargo.lock is shipped in the tarball.
+  # No --offline here; a packager builds with network access, as normal.
+  export RUSTUP_TOOLCHAIN="${RUSTUP_TOOLCHAIN:-}"
+  cargo build --release --locked
+}
+
+package() {
+  _srcdir
+
+  install -Dm755 target/release/wallpaper-style \
+    "${pkgdir}/usr/bin/wallpaper-style"
+  install -Dm755 target/release/wallpaper-style-gui \
+    "${pkgdir}/usr/bin/wallpaper-style-gui"
+
+  install -Dm644 assets/io.github.wallpaperstyle.desktop \
+    "${pkgdir}/usr/share/applications/io.github.wallpaperstyle.desktop"
+
+  # Icons at every size the desktop uses. The SVG is the source of truth and is
+  # installed as scalable; PNGs are rendered at build time when a rasteriser is
+  # available, and skipped cleanly when it is not.
+  install -Dm644 assets/io.github.wallpaperstyle.svg \
+    "${pkgdir}/usr/share/icons/hicolor/scalable/apps/io.github.wallpaperstyle.svg"
+  for size in 16 22 24 32 48 64 128 256; do
+    if command -v rsvg-convert >/dev/null 2>&1; then
+      install -d "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps"
+      rsvg-convert -w "$size" -h "$size" assets/io.github.wallpaperstyle.svg \
+        -o "${pkgdir}/usr/share/icons/hicolor/${size}x${size}/apps/io.github.wallpaperstyle.png"
+    fi
+  done
+
+  install -Dm644 README.md "${pkgdir}/usr/share/doc/${pkgname}/README.md"
+  install -Dm644 docs/LIMITATIONS.md "${pkgdir}/usr/share/doc/${pkgname}/LIMITATIONS.md"
+  install -Dm644 LICENSE "${pkgdir}/usr/share/licenses/${pkgname}/LICENSE"
+
+  # The systemd unit is installed by the application itself into the *user's*
+  # config directory, so nothing goes to /usr/lib/systemd here: the unit needs
+  # the user's session and must remain theirs to edit and remove.
+}
+
+# Notes for the packager
+#
+# * No post-install step writes to the user's home directory. Everything the
+#   application changes is created by `wallpaper-style install`, which the user
+#   runs themselves, so `pacman -S` never alters a desktop.
+# * `pacman -R` therefore also leaves the user's config alone; the .install file
+#   explains how to remove it.

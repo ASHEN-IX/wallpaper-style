@@ -1,0 +1,25 @@
+[package]
+name = "ws-cli"
+description = "Command-line interface for Wallpaper Style"
+version.workspace = true
+edition.workspace = true
+rust-version.workspace = true
+license.workspace = true
+
+[[bin]]
+name = "wallpaper-style"
+path = "src/main.rs"
+
+[dependencies]
+ws-core.workspace = true
+ws-palette.workspace = true
+ws-backend.workspace = true
+ws-plasma.workspace = true
+ws-service.workspace = true
+clap.workspace = true
+serde.workspace = true
+serde_json.workspace = true
+anyhow.workspace = true
+log.workspace = true
+env_logger.workspace = true
+nix = { version = "0.31", features = ["signal"] }
