@@ -1,0 +1,6 @@
+{
+  "opacity": {"default": 0.80, "browser": 0.82, "launcher": 0.85},
+  "app_overrides": {},
+  "kvantum": true,
+  "kvantum_apps": ["dolphin", "kate", "kwrite", "ark"]
+}

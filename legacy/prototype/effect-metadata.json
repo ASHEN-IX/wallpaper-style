@@ -1,0 +1,15 @@
+{
+  "KPackageStructure": "KWin/Effect",
+  "KPlugin": {
+    "Id": "codex-glass",
+    "Name": "App transparency",
+    "Description": "Desktop-aware app transparency: browsers 82%, VirtualBox/Steam/Heroic launchers 85%, other selected apps 80%.",
+    "Version": "1.6",
+    "License": "MIT",
+    "Category": "Appearance",
+    "EnabledByDefault": false
+  },
+  "X-Plasma-API": "javascript",
+  "X-Plasma-MainScript": "code/main.js",
+  "X-KDE-Ordering": 50
+}
